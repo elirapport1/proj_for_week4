@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Green Toolbox — A Courtroom Drama</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ceiling">
+    <div class="fan"><div class="blade"></div><div class="blade"></div><div class="blade"></div></div>
+    <div class="fan"><div class="blade"></div><div class="blade"></div><div class="blade"></div></div>
+    <div class="fan"><div class="blade"></div><div class="blade"></div><div class="blade"></div></div>
+  </div>
+
+  <header class="titlebar">
+    <div class="case-number">CASE NO. 47-CR-2241</div>
+    <h1>THE GREEN TOOLBOX</h1>
+    <div class="subtitle">The People v. Cross — Day Five</div>
+  </header>
+
+  <main id="stage">
+    <div class="cover" id="cover">
+      <div class="cover-inner">
+        <div class="seal">⚖</div>
+        <h2>All rise.</h2>
+        <p class="flavor">A courtroom drama in three movements. Click the bench to begin.</p>
+        <button id="startBtn" class="gavel-btn" aria-label="Begin the trial">
+          <span class="gavel">🔨</span>
+          <span>BEGIN THE TRIAL</span>
+        </button>
+        <p class="hint">Press <kbd>Space</kbd> or <kbd>→</kbd> to advance · <kbd>←</kbd> to go back</p>
+      </div>
+    </div>
+
+    <section id="script" class="script" aria-live="polite"></section>
+
+    <div class="controls">
+      <button id="prevBtn" class="ctrl" aria-label="Previous">◀ Back</button>
+      <div class="progress">
+        <div id="progressBar" class="progress-bar"></div>
+        <div class="progress-text"><span id="progressCount">0</span> / <span id="progressTotal">0</span></div>
+      </div>
+      <button id="nextBtn" class="ctrl primary" aria-label="Next">Next ▶</button>
+    </div>
+
+    <div class="act-banner" id="actBanner"></div>
+  </main>
+
+  <div class="gavel-flash" id="gavelFlash" aria-hidden="true"></div>
+
+  <footer class="footer">
+    <span class="divider">•</span>
+    <button id="restartBtn" class="linkish">Restart</button>
+    <span class="divider">•</span>
+    <button id="autoBtn" class="linkish">Autoplay: Off</button>
+    <span class="divider">•</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

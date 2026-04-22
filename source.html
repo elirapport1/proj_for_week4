@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tell Daniel It Wasn't Meant for Me</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Oswald:wght@300;400&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0f;
+      --surface: #141416;
+      --surface2: #1b1b1e;
+      --border: #2a2a2f;
+      --gold: #c9a84c;
+      --gold-dim: #8a6e2e;
+      --text: #e2ddd6;
+      --text-muted: #8a857e;
+      --stage: #1a1510;
+      --stage-border: #3a2e1a;
+      --red-dim: #5c2020;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.85;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      position: relative;
+      text-align: center;
+      padding: 80px 24px 60px;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .gavel-icon {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      opacity: 0.6;
+      display: block;
+      letter-spacing: 0.1em;
+    }
+    header h1 {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 300;
+      font-size: clamp(1.6rem, 4vw, 3rem);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    header .subtitle {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+    }
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: var(--gold-dim);
+      margin: 20px auto 0;
+    }
+
+    /* ── Layout ── */
+    main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 60px 28px 100px;
+    }
+
+    /* ── Scene block ── */
+    .scene {
+      background: var(--stage);
+      border: 1px solid var(--stage-border);
+      border-left: 3px solid var(--gold-dim);
+      border-radius: 2px;
+      padding: 16px 22px;
+      margin: 32px 0;
+      font-style: italic;
+      font-size: 0.95em;
+      color: #b8a88a;
+      line-height: 1.7;
+    }
+
+    /* ── Dialogue lines ── */
+    .line {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 0 20px;
+      padding: 6px 0;
+      align-items: baseline;
+      border-bottom: 1px solid transparent;
+      transition: background 0.15s;
+    }
+    .line:hover {
+      background: rgba(201,168,76,0.04);
+    }
+    .line .speaker {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 400;
+      font-size: 0.75em;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding-top: 3px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .line .speech {
+      font-size: 1em;
+      color: var(--text);
+    }
+
+    /* Speaker color coding */
+    .judge    .speaker { color: #8eb8d4; }
+    .son      .speaker { color: #c46060; }
+    .lawyer   .speaker { color: #9ec49e; }
+    .murderer .speaker { color: #b89ad4; }
+    .bailiff  .speaker { color: #d4b87a; }
+    .daniel   .speaker { color: #e07070; }
+    .clerk    .speaker { color: #aaaaaa; }
+
+    /* ── Section break ── */
+    .act-break {
+      text-align: center;
+      margin: 56px 0 40px;
+      position: relative;
+    }
+    .act-break::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--border);
+    }
+    .act-break span {
+      position: relative;
+      background: var(--bg);
+      padding: 0 18px;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 300;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+
+    /* ── Sticky character legend ── */
+    .legend {
+      position: fixed;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      z-index: 10;
+    }
+    .legend:hover { opacity: 1; }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .d-judge    { background: #8eb8d4; }
+    .d-son      { background: #c46060; }
+    .d-daniel   { background: #e07070; }
+    .d-lawyer   { background: #9ec49e; }
+    .d-murderer { background: #b89ad4; }
+    .d-bailiff  { background: #d4b87a; }
+    .d-clerk    { background: #aaaaaa; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      font-style: italic;
+    }
+
+    @media (max-width: 700px) {
+      .legend { display: none; }
+      .line { grid-template-columns: 100px 1fr; gap: 0 12px; }
+      header h1 { font-size: 1.5rem; }
+      main { padding: 40px 16px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="gavel-icon">⚖</span>
+  <h1>Tell Daniel It Wasn&rsquo;t Meant for Me</h1>
+  <p class="subtitle">A courtroom drama in dialogue</p>
+  <div class="divider"></div>
+</header>
+
+<!-- Character legend -->
+<aside class="legend" aria-label="Character key">
+  <div class="legend-item"><span class="legend-dot d-judge"></span>Judge</div>
+  <div class="legend-item"><span class="legend-dot d-son"></span>Son / Daniel</div>
+  <div class="legend-item"><span class="legend-dot d-lawyer"></span>Lawyer</div>
+  <div class="legend-item"><span class="legend-dot d-murderer"></span>Murderer / Cross</div>
+  <div class="legend-item"><span class="legend-dot d-bailiff"></span>Bailiff</div>
+  <div class="legend-item"><span class="legend-dot d-clerk"></span>Clerk</div>
+</aside>
+
+<main>
+
+<div class="scene">The courtroom is too quiet. The ceiling fans hum. A bailiff closes the side door with a firm click. The judge settles into his chair. At the defense table, the lawyer leans in, one hand over a yellow legal pad. The murderer sits beside him in county blues, expression controlled but not calm. In the front row, the son of the murdered man stands when he should be sitting, fingers locked around the back of the bench in front of him.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale, sit down.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">I just want to look at him.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Sit down now.</span></div>
+
+<div class="scene">The son sits, but only barely, perched on the edge of the bench. His eyes stay fixed on the defendant.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Your Honor, before the jury is brought in, the defense renews its objection to the inclusion of the victim impact photographs. Their prejudicial effect is obvious.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">I ruled on that yesterday.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">And I am preserving the record today.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Record preserved.</span></div>
+
+<div class="scene">The lawyer nods once, then turns slightly toward his client.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Don't react to anything. Not to him, not to the photographs, not to the testimony. Look at me or look down.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">I know how to sit in a chair.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Then do it like your life depends on it.</span></div>
+
+<div class="scene">The murderer lets out a breath through his nose. Across the aisle, the son laughs once, sharp and humorless.</div>
+
+<div class="line son"><span class="speaker">Son</span><span class="speech">That's the first true thing anybody's said in here.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">He's worried about how he sits? My father was found in a ditch.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">My client has the right to a fair trial.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">Your client had my father begging on his knees.</span></div>
+
+<div class="scene">Silence. Even the hum of the fans seems to recede.</div>
+
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">That's not what happened.</span></div>
+
+<div class="scene">The son rises so fast the bench creaks.</div>
+
+<div class="line son"><span class="speaker">Son</span><span class="speech">You don't get to tell me what happened.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Sit down, or I will have you removed.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">Then remove me.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale—</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">No, let him talk. Let him say it. He's been sitting there for four days pretending he's made of stone. Let him say what happened.</span></div>
+
+<div class="scene">The lawyer stands now too, one palm pressed to the table.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">My client will not be baited into an outburst because the gallery cannot control itself.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">The gallery?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">You are not a party to this case.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">He killed my father.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Allegedly.</span></div>
+
+<div class="scene">The son stares at the lawyer as if he may cross the aisle.</div>
+
+<div class="line son"><span class="speaker">Son</span><span class="speech">Say that again.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Counselor.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Withdrawn.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">He was alive when I left.</span></div>
+
+<div class="scene">The son goes still. The judge's face hardens. The lawyer slowly turns to look at his client.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Don't say another word.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">There. There. You hear that? You all hear that?</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">The statement will be stricken.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">Stricken?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Your Honor, my client is under enormous pressure—</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">He just said it.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">I said he was alive.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">And you know that because you were there.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Stop talking.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">He was breathing.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Stop.</span></div>
+
+<div class="scene">The murderer looks past everyone now, directly at the son.</div>
+
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Your father looked at me like he knew me.</span></div>
+
+<div class="scene">The son's mouth opens, but nothing comes out at first.</div>
+
+<div class="line son"><span class="speaker">Son</span><span class="speech">What does that mean?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Your Honor, I need a recess.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">You needed control of your client five seconds ago.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">What does that mean?</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">He said a name.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">My father said your name?</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">No.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">Then whose?</span></div>
+
+<div class="scene">The murderer's jaw tightens. For the first time, he looks uncertain.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Do not answer that.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Bailiff, clear the courtroom except counsel, the defendant, and Mr. Vale.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">No. No, don't you dare send me out now.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale, if there is even a chance this concerns a matter not yet in evidence, I will control how it enters this courtroom.</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">That man put a bullet in my father and now we're protecting procedure?</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">We are protecting the trial. Sit down and keep your voice level.</span></div>
+
+<div class="scene">The bailiff hesitates at the back doors, waiting.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Your Honor, my client is not waiving anything. He is exhausted, he is frightened, and he is misspeaking.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">I'm not frightened.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">You should be.</span></div>
+
+<div class="scene">The judge folds his hands.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Cross, I am going to ask you one question, and your attorney may advise you whether to answer.</span></div>
+
+<div class="scene">The murderer says nothing.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Did the victim speak before his death?</span></div>
+
+<div class="scene">The lawyer leans in, whispering hard and fast. The murderer listens, eyes lowered. The son stands motionless, staring.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Do not answer. Do you understand me? Do not answer.</span></div>
+
+<div class="scene">The whispering stops.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Cross?</span></div>
+
+<div class="scene">A long beat.</div>
+
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Yes.</span></div>
+
+<div class="scene">The son takes one step forward into the aisle.</div>
+
+<div class="line son"><span class="speaker">Son</span><span class="speech">What did he say?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">We are done here.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">What did he say, Mr. Cross?</span></div>
+
+<div class="scene">The murderer looks at the son again, and when he speaks, his voice is quieter than before.</div>
+
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">He said, "Tell Daniel it wasn't meant for me."</span></div>
+
+<div class="scene">The son goes pale.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Daniel?</span></div>
+<div class="line son"><span class="speaker">Son</span><span class="speech">That's me.</span></div>
+
+<div class="scene">No one moves.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Your Honor, recess. Now.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Granted.</span></div>
+
+<div class="scene">The gavel comes down once. The crack echoes. But nobody immediately leaves.</div>
+
+<div class="act-break"><span>&mdash;&nbsp;recess&nbsp;&mdash;</span></div>
+
+<div class="scene">The gavel's echo lingers, but the room stays frozen. The bailiff looks to the judge for instruction and gets none. The son—Daniel—has one hand on the rail now, knuckles white. The lawyer is already gathering papers with shaking precision, as if neat stacks might restore control. The murderer sits very still.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">No.</span></div>
+
+<div class="scene">It comes out barely above a whisper.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">No, he didn't.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale—</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">He didn't call me Daniel.</span></div>
+
+<div class="scene">The murderer's eyes narrow, studying him.</div>
+
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">He did.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">He called me Danny.</span></div>
+
+<div class="scene">The lawyer closes his eyes for half a second.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">That is exactly why no one should be speaking right now.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">He called me Danny when he was happy, and "son" when he was angry, and "Daniel" only when—</span></div>
+
+<div class="scene">He stops. His face changes.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Only when what?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Only when he thought I was lying.</span></div>
+
+<div class="scene">The judge watches him carefully.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Sit down, Mr. Vale.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">No.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Daniel—</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Don't say my name like you know me.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Fine. Then listen to me, Mr. Vale. If there is some fact buried in what was just said, blurting it out in open court is the fastest way to poison it.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Poison it for who?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">For the truth.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">You don't care about the truth.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">I care about what can be proven.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Same thing to you?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Never.</span></div>
+
+<div class="scene">That lands harder than anyone expects. Even Daniel pauses.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Counsel, in chambers. Now.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">No. He says something like that and now everybody disappears behind a door?</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale, you are here because I allowed it. Do not mistake that for authority.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Then tell me why my father would say that.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Because he thought you were next.</span></div>
+
+<div class="scene">The lawyer slams a palm on the table.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Enough!</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Cross, one more outburst and I will have your attorney gag your side of this table with procedure if I have to.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">He asked.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">He is grieving. He is not examining you.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Next for what?</span></div>
+
+<div class="scene">The murderer turns toward him fully now. His voice loses its earlier edge. It is flatter, more dangerous for how plain it is.</div>
+
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Your father owed someone. I was there to send a message.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">You shot him.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">I said I was there to send a message.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">That is the message.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Stop answering selectively as if that helps you.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Cross, answer this: are you claiming someone else ordered the killing?</span></div>
+
+<div class="scene">The lawyer points a finger at the bench.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">He invokes.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Yes.</span></div>
+
+<div class="scene">The lawyer's hand drops.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">You idiot.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Name them.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Do not.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Name them.</span></div>
+
+<div class="scene">The murderer looks at Daniel, not the judge.</div>
+
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Your father said you took something.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">I don't know what you're talking about.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Then he died for nothing.</span></div>
+
+<div class="scene">Daniel lunges forward before he knows he's moving. The bailiff is between them in an instant, catching him across the chest. The bench screeches. Papers slide from the defense table.</div>
+
+<div class="line bailiff"><span class="speaker">Bailiff</span><span class="speech">Back! Back!</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">You lying bastard!</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale!</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Sit him down or get him out.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">He's trying to bury this on me!</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">I'm telling you what he said.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">You expect me to believe my father's last words were about me stealing something?</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Not stealing.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Then what?</span></div>
+
+<div class="scene">The murderer doesn't answer right away. The silence feels deliberate now.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Cross, if you are going to keep speaking, then finish a sentence for once in your life.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">He said you kept records.</span></div>
+
+<div class="scene">Daniel's anger falters. That tiny hesitation is impossible to miss.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Your Honor—</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">I saw it.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Records of what?</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Payments. Names. Dates.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">My father sold auto parts.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Your father sold whatever men needed him to sell.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">No.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">You really didn't know?</span></div>
+
+<div class="scene">The lawyer studies Daniel now with a new, colder interest. The judge sees it too.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale, is there anything you need to tell this court?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">No.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">That answer came too fast.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Because there's nothing to tell.</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">He said the ledger would keep you alive.</span></div>
+
+<div class="scene">Daniel stops struggling against the bailiff.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Ledger?</span></div>
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">That's the word he used.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">This is worthless unless it's anchored to something real.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Many things are real before they are admissible, counselor.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">And many lies become dangerous when spoken in the right tone.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">True.</span></div>
+
+<div class="scene">The judge rises. Everyone straightens instinctively.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Here is what will happen. Mr. Cross will say nothing further in this room outside the presence of a court reporter and, if necessary, under seal. Counsel will join me in chambers immediately. Mr. Vale—</span></div>
+
+<div class="scene">Daniel looks up.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">You will remain seated and silent unless I call for you.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">And if I don't?</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Then you spend the afternoon in a holding cell reflecting on the difference between pain and permission.</span></div>
+
+<div class="scene">Daniel gives a short, bitter laugh.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">You sound like my father.</span></div>
+
+<div class="scene">The judge holds his gaze for a moment longer than expected.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Then your father had some discipline in him.</span></div>
+
+<div class="scene">The murderer stands as the bailiff moves to reposition him. As he does, he leans just slightly toward Daniel.</div>
+
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Check the green toolbox.</span></div>
+
+<div class="scene">The lawyer wheels on him.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Stop talking!</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">What green toolbox?</span></div>
+
+<div class="scene">But the bailiff is already turning the murderer toward the side door. The judge has gone still again.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">What toolbox, Mr. Cross?</span></div>
+
+<div class="scene">The murderer glances back over his shoulder. This time, when he smiles, it is the first honest expression he has shown.</div>
+
+<div class="line murderer"><span class="speaker">Murderer</span><span class="speech">Ask his mother.</span></div>
+
+<div class="scene">The side door shuts behind him.</div>
+
+<div class="act-break"><span>&mdash;&nbsp;the door shuts&nbsp;&mdash;</span></div>
+
+<div class="scene">The side door shuts, and the sound seems to split the room in two. On one side: the judge, rigid behind the bench. On the other: Daniel, still half-held by the bailiff, breathing through his mouth like he's been running. The lawyer remains by the table, one hand flat on the scattered papers, staring at the door as if he could force the words back inside.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">My mother?</span></div>
+
+<div class="scene">No one answers immediately.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Bailiff, release him.</span></div>
+<div class="line bailiff"><span class="speaker">Bailiff</span><span class="speech">Your Honor—</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">He is not under arrest.</span></div>
+
+<div class="scene">The bailiff lets go. Daniel doesn't move. He's looking at the empty doorway.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">That was intentional.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">What was?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">The toolbox. Your mother. The pause before each line. He's turning this into a maze because he has nothing solid to bargain with except confusion.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">You think he made that up?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">I think men like him don't waste words unless they buy something.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">That applies to more than men like him.</span></div>
+
+<div class="scene">The lawyer glances up at the bench, accepts the hit, says nothing.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">My mother's been dead six years.</span></div>
+
+<div class="scene">That changes the air.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">I'm sorry.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Don't.</span></div>
+
+<div class="scene">The judge's expression hardens again, less from offense than restraint.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Did your father keep old tools? Storage? Garage? A workshop?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Everybody keeps tools.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Green toolbox, Daniel.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Stop using my name like we're on the same side.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">At the moment, I'm on the side of finding out whether my client just injected a dead woman into a murder trial to distract from his own exposure.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Your client shot my father.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Very possibly. And still, he may also be telling the truth about something else.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">You say that like it's normal.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">It is normal. That's the part people hate.</span></div>
+
+<div class="scene">Daniel turns away from him, up toward the bench.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">He said "ask his mother" because he knew she was dead?</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Maybe.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">How would he know that?</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Maybe because someone told him. Maybe because he knew your father longer than you think. Maybe because he's lying and dead people make useful witnesses.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Which one do you believe?</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">I don't believe. I sort.</span></div>
+
+<div class="scene">The judge steps down from the bench now. It is not dramatic, but it is unusual enough that everyone notices.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Counsel, chambers can wait two minutes.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Your Honor—</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Two minutes.</span></div>
+
+<div class="scene">The lawyer nods once.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale. Look at me.</span></div>
+
+<div class="scene">Daniel does.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">When your father used "Daniel," what kind of lie did he think you were telling?</span></div>
+
+<div class="scene">Daniel's eyes narrow. He knows this is not sympathy. It is precision.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">The kind where I already knew the answer.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Good. So when Mr. Cross said your father used your formal name, what was your first thought?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">That my father thought I was hiding something.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Were you?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">No.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">That is not what your face said.</span></div>
+
+<div class="scene">Daniel turns on him.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">My face?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">When he said "records," you flinched. When he said "ledger," you stopped breathing for a full second.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">You don't know what you saw.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">I make a living on less.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Enough. Mr. Vale, answer carefully. Had you ever heard the word "ledger" used in connection with your father before today?</span></div>
+
+<div class="scene">Daniel says nothing.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">That is not a difficult question.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Once.</span></div>
+
+<div class="scene">The lawyer straightens.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">From whom?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">My mother.</span></div>
+
+<div class="scene">The courtroom goes quiet again.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">When?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Years ago. I was maybe fifteen.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">In what context?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">She and my father were fighting in the kitchen. She said, "One day that ledger is going to bury us." He told her to lower her voice because I was upstairs.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">And were you upstairs?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">I was on the stairs.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Did you ever ask him?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">He said it was tax stuff.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Did you believe him?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">I was fifteen.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">That's not an answer.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">No.</span></div>
+
+<div class="scene">The judge folds his arms.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Why not?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Because my mother was scared.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Of your father?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">No.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Of who, then?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Of the people my father was scared of.</span></div>
+
+<div class="scene">The lawyer looks back toward the side door.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Then Mr. Cross may not have been freelancing.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">You sound pleased.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">I sound interested.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Same thing to you?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Often.</span></div>
+
+<div class="scene">The judge cuts in before Daniel can answer.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Did your mother ever mention a toolbox?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">No.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Did your father own one that was distinct enough to be referred to that way?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">In the garage, there was an old metal one. Green. Rust on the corners. He never let me touch it.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">There it is.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">That proves nothing.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">It proves your client— excuse me, the victim— kept exactly the kind of object Mr. Cross named without prompting.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Or he'd been to our house.</span></div>
+
+<div class="scene">That lands.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Had he?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">I don't know.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Did your father know him?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">I never saw them together.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Not the question.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Then I don't know.</span></div>
+
+<div class="scene">The judge looks to the bailiff.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Has the jury been kept out?</span></div>
+<div class="line bailiff"><span class="speaker">Bailiff</span><span class="speech">Yes, Your Honor.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Good.</span></div>
+
+<div class="scene">He turns back.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale, where is this toolbox now?</span></div>
+
+<div class="scene">Daniel swallows.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">I don't know.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Another bad answer.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">We cleaned the garage after my father died.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">"We" meaning?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Me and my uncle.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Your father's brother?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">My mother's.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Name.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Ray Donnelly.</span></div>
+
+<div class="scene">The lawyer's eyes sharpen at once.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Donnelly.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">You know it?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">I know the name.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">From where?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">I'm not sure yet.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">That's convenient.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">It's accurate.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Save it. Mr. Vale, did this uncle take anything from the garage?</span></div>
+
+<div class="scene">Daniel hesitates.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">He said he was taking paperwork so I wouldn't have to deal with it.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">What paperwork?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">I didn't ask.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Why not?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Because my father had just been murdered!</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Yes, and people tend to hide things inside grief because no one wants to press them while they're bleeding.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Counselor.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">That was not a metaphor I needed.</span></div>
+
+<div class="scene">Daniel rubs his face hard with both hands.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Are you saying my uncle knew?</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">I'm saying someone might have cleaned the board before anyone else saw the pieces.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">Stop talking like it's a game.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Then start treating it like it isn't.</span></div>
+
+<div class="scene">The judge's tone drops.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Mr. Vale. Is there any reason— any reason at all— that your uncle would know to remove a ledger from your father's garage immediately after the killing?</span></div>
+
+<div class="scene">Daniel looks from the judge to the lawyer, then back to the floor.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">He got to the house before I did.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Who called him?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">I didn't.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Who told you he took paperwork?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">He did. Later. He said, "I cleaned up some of your dad's mess."</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Exact words?</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">"Some of your dad's mess." Yes.</span></div>
+
+<div class="scene">The lawyer lets out a slow breath.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Your Honor, chambers is now urgent.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">I'm aware.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">What happens now?</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Now I find out whether your uncle Ray Donnelly is a grieving relative, a loose end, or the reason a defendant just blew up his own defense in open court.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">And me?</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">That depends.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">On what?</span></div>
+
+<div class="scene">The judge studies him carefully.</div>
+
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">On whether your father died trying to protect you, or because of you.</span></div>
+
+<div class="scene">Daniel recoils like he's been struck.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">I didn't do anything.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Then this is the moment to remember what you did do.</span></div>
+
+<div class="scene">A knock sounds at the side door. The bailiff opens it a crack. A clerk leans in, pale, rattled.</div>
+
+<div class="line clerk"><span class="speaker">Clerk</span><span class="speech">Your Honor— sorry— there's a call for Mr. Vale. They said it couldn't wait.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">From whom?</span></div>
+
+<div class="scene">The clerk looks down at the note in her hand.</div>
+
+<div class="line clerk"><span class="speaker">Clerk</span><span class="speech">They only said, "Tell Daniel to stop opening old boxes."</span></div>
+
+<div class="scene">Daniel goes white.</div>
+
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">Do not take that call alone.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">Put it on speaker in chambers.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">No.</span></div>
+
+<div class="scene">All three turn to him.</div>
+
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">If this is about my father, they want me scared. I'm not giving them a room and an audience.</span></div>
+<div class="line lawyer"><span class="speaker">Lawyer</span><span class="speech">This is not a performance choice.</span></div>
+<div class="line daniel"><span class="speaker">Daniel</span><span class="speech">It's my call.</span></div>
+<div class="line judge"><span class="speaker">Judge</span><span class="speech">In my courthouse, it is not.</span></div>
+
+<div class="scene">The phone begins ringing again in the clerk's trembling hand.</div>
+
+</main>
+
+<footer>
+  &ldquo;Tell Daniel it wasn&rsquo;t meant for me.&rdquo;
+</footer>
+
+</body>
+</html>
